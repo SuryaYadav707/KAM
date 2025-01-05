@@ -152,7 +152,7 @@ Congratulations! Your project is set up and running successfully.
 - **POST**:
   - Handles CRUD operations for KAMs.
   - **Request Form Data:**
-    - `action`: Specifies the operation (`create_kam`, `update_kam`).
+    - `action`: Specifies the operation (`create_kam`).
     - Additional fields based on the action.
 
 ### Lead Contacts
