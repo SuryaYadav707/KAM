@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+
+       <!-- Toggle between Lead and KAM -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex gap-3">
+            <!-- Toggle between Lead and KAM -->
+            <div>
+                <label class="form-check-label" for="leadToggle">Lead</label>
+                <input class="form-check-input" type="radio" name="leadOrKam" id="leadToggle" value="lead" 
+                    {% if selected_type == 'lead' %}checked{% endif %} 
+                    onchange="toggleRoute('lead')">
+            </div>
+            <div>
+                <label class="form-check-label" for="kamToggle">KAM</label>
+                <input class="form-check-input" type="radio" name="leadOrKam" id="kamToggle" value="kam" 
+                    {% if selected_type == 'kam' %}checked{% endif %} 
+                    onchange="toggleRoute('kam')">
+            </div>
+        </div>
+        
+
+
+        <div class="d-flex gap-3">
+            <input type="text" id="searchKam" class="form-control" placeholder="Search by KAM" oninput="filterLeads()">
+        </div>
+    </div>
+       
+   <!-- Dashboard Stats -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4>Total Leads: {{ total_leads }}</h4>
+        <h4>Total KAMs: {{ total_kams }}</h4>
+
+        <!-- Conditionally display Add Lead or Add KAM button based on selected type -->
+        <button class="btn btn-primary" id="addKamButton" data-bs-toggle="modal" data-bs-target="#kamModal" onclick="openKamModal()">Add KAM</button>
+    </div>
+
+
+    <!-- Leads/KAMs List -->
+    <div class="row">
+            {% for kam in kams %}
+            <div class="col-md-12 mb-3 kam-item" data-username='{{ kam.username|lower }}''>
+                <div class="card">
+                    <div class="card-body d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title">{{ kam.username }}</h5>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#kamModal"
+                                onclick="openKamModal({{ kam.id }}, '{{ kam.username|escape }}', '{{kam.password|escape}}')">
+                                Update KAM
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+    </div>
+    <div id="noResults" style="display: none; text-align: center; margin-top: 20px;">
+        <p>No leads or KAMs found matching your search criteria.</p>
+    </div>
+
+
+    
+
+   
+
+   
+    <!-- KAM Modal (for updating KAM details) -->
+    <div class="modal fade" id="kamModal" tabindex="-1" aria-labelledby="kamModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="kamModalLabel">Add/Update KAM</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="kamForm">
+                        <input type="hidden" name="action" id="action" value="create_kam">
+                        <input type="hidden" name="kam_id" id="kam_id">
+                        <div class="mb-3">
+                            <label for="kam_username" class="form-label">KAM Username</label>
+                            <input type="text" class="form-control" id="kam_username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="kam_password" class="form-label">KAM Password</label>
+                            <input type="text" class="form-control" id="kam_passowrd" name="password" required>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="submitKamForm()">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  
+
+<script src="{{ url_for('static', filename='js/admin_dashboard.js') }}"></script>
+
+{% endblock %}
